@@ -22,19 +22,19 @@
                              (get-trivial-storage))
 
 (if (not (check-password "user"
-                         (prepare-password "pass" 
-                                           *hashing-salt*)
+                         (restas.auth:prepare-password "pass" 
+                                                       *hashing-salt*)
                          (get-trivial-storage)))
     (error "Example not working! Please send bug message"))
 
-;(set-salt restas.auth.storage:*default-salt*)
-;(set-auth-message "Hi! Enter username and password")
-;(set-auth-message restas.auth::*default-auth-message*)
-(set-storage (get-trivial-storage))
+;(restas.auth:set-salt restas.auth.storage:*default-salt*)
+;(restas.auth:set-auth-message "Hi! Enter username and password")
+;(restas.auth:set-auth-message restas.auth::*default-auth-message*)
+(restas.auth:set-storage (get-trivial-storage))
 ;(restas.auth::get-users (get-storage))
 
 
-(start :restas.login-example :port 8443 ;;Listening 443 port denied (by default) on Windows7
+(restas:start :restas.login-example :port 8443 ;;Listening 443 port denied (by default) on Windows7
        :decorators (list #'restas.auth:@http-auth-require)
        :ssl-certificate-file (probe-file (merge-pathnames "example.crt" *this-dir*))
        :ssl-privatekey-file (probe-file (merge-pathnames "example.key" *this-dir*))
