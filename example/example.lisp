@@ -1,5 +1,5 @@
 (defparameter *this-dir* (make-pathname :defaults *load-pathname* :name nil :type nil))
-(pushnew #P"D:/linkfly-win-files/projects/restas.auth/" asdf:*central-registry*)
+(pushnew *this-dir* asdf:*central-registry*)
 (ql:quickload :restas.auth)
 
 (restas:define-module :restas.login-example
