@@ -4,11 +4,12 @@
   (:use :cl :restas :restas.auth.storage)
   (:import-from :hunchentoot #:authorization #:require-authorization #:session-value)
   (:import-from :routes #:proxy-route #:route-check-conditions)
-  (:export
+  (:export   
    #:@http-auth-require #:prepare-password 
    #:store-user-pass #:get-user-pass #:check-password
    #:set-salt #:get-salt #:set-storage #:get-storage
-   #:set-auth-message #:get-auth-message))
+   #:set-auth-message #:get-auth-message
+   #:storage #:trivial-storage))
 
 (in-package :restas.auth)
 

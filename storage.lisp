@@ -7,7 +7,7 @@
   (:use :cl :hu.dwim.defclass-star :iterate)
   (:import-from :babel #:string-to-octets)
   (:import-from :ironclad #:digest-sequence)
-  (:export #:prepare-password #:store-user-pass #:get-user-pass #:*default-salt* #:get-users #:user-exist-p))
+  (:export #:storage #:trivial-storage #:prepare-password #:store-user-pass #:get-user-pass #:*default-salt* #:get-users #:user-exist-p))
 
 (in-package :restas.auth.storage)
 
@@ -20,6 +20,12 @@
 ;(setf tmp (make-instance 'pass-hashing))
 
 ;;;;;;;;; Generic API ;;;;;;;;;;
+;; Abstract storage 
+(defclass storage () ())
+
+(defclass trivial-storage ()
+  ((pathname :initarg :pathname :accessor storage-pathname)))
+
 (defgeneric store-user-pass (user pass storage))
 (defgeneric get-user-pass (user storage))
 (defgeneric get-users (storage))
@@ -73,26 +79,30 @@
 (defun read-trivial-storage (file)
   (read-file file))
 
-(defmethod store-user-pass (user pass (storage pathname) &aux data)
-  (setf data (if (probe-file storage)
-                 (read-trivial-storage storage)
-               (progn (init-trivial-storage storage) nil)))
+;;; Trivial implementation 
+(defmethod store-user-pass (user pass (storage trivial-storage) &aux data pathname)
+  (setf pathname (storage-pathname storage))
+  (setf data (if (probe-file pathname)
+                 (read-trivial-storage pathname)
+               (progn (init-trivial-storage pathname) nil)))
   (if (not data)
                  (setf data `((,user ,pass)))
                (let ((pair (assoc user data :test #'string=)))
                  (if pair 
                      (setf (second pair) pass)
                    (push (list user pass) data))))
-  (update-trivial-storage storage data))
+  (update-trivial-storage pathname data))
 
-(defmethod get-user-pass (user (storage pathname))
-  (second (assoc user (read-trivial-storage storage) :test #'string=)))
-;(get-user-pass "LinkFly" storage)
+(defmethod get-user-pass (user (storage trivial-storage))
+  (second (assoc user (read-trivial-storage (storage-pathname storage)) :test #'string=)))
+;(setf storage (make-instance 'trivial-storage :pathname #P"D:/linkfly-win-files/projects/restas.auth/example/users.trivial-storage"))
+;(get-user-pass "user" storage)
       
-(defmethod get-users ((storage pathname))
-  ;(setf storage (merge-pathnames "example/users.trivial-storage" (asdf:system-source-directory :restas.auth)))
-  (mapcar #'first (read-trivial-storage storage)))
+(defmethod get-users ((storage trivial-storage))
+  (mapcar #'first (read-trivial-storage (storage-pathname storage))))
+;(get-users storage)
   
-(defmethod user-exist-p (user (storage pathname))
+(defmethod user-exist-p (user (storage trivial-storage))
   (and (get-user-pass user storage) t))
+;(user-exist-p "user" storage)
   

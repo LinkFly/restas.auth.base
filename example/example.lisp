@@ -15,7 +15,7 @@
 (defparameter *hashing-salt* "<blabla>")
 
 (defun get-trivial-storage ()
-  (merge-pathnames *this-dir* "users.trivial-storage"))
+  (make-instance 'trivial-storage :pathname (merge-pathnames *this-dir* "users.trivial-storage")))
 
 (restas.auth:store-user-pass "user" 
                              (restas.auth:prepare-password "pass" *hashing-salt*)
@@ -41,3 +41,5 @@
        )
 ;(stop-all)
 ;(restas:debug-mode-on)
+
+
