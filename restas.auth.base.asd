@@ -2,4 +2,4 @@
   :depends-on (:restas :hunchentoot :routes :ironclad :babel :hu.dwim.defclass-star :iterate)
   :serial t
   :components ((:file "storage")
-               (:file "restas.auth")))
+               (:file "restas.auth.base")))
