@@ -30,7 +30,7 @@
 ;(restas.auth:set-salt restas.auth.storage:*default-salt*)
 ;(restas.auth:set-auth-message "Hi! Enter username and password")
 ;(restas.auth:set-auth-message restas.auth::*default-auth-message*)
-(restas.auth:set-storage (get-trivial-storage))
+(restas.auth.base:set-storage (get-trivial-storage))
 ;(restas.auth::get-users (get-storage))
 
 
