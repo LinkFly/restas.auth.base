@@ -35,7 +35,7 @@
 
 
 (restas:start :restas.login-example :port 8443 ;;Listening 443 port denied (by default) on Windows7
-       :decorators (list #'restas.auth:@http-auth-require)
+       :decorators (list #'restas.auth.base:@http-auth-require)
        :ssl-certificate-file (probe-file (merge-pathnames "example.crt" *this-dir*))
        :ssl-privatekey-file (probe-file (merge-pathnames "example.key" *this-dir*))
        )
