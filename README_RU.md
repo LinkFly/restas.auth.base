@@ -1,9 +1,11 @@
 RESTAS.AUTH.BASE - Базовая система аутентификации для систем на базе RESTAS/HUNCHENTOOT
-================
+-------------
 
 Пример использования см. в example/example.lisp
 Для того, чтобы запустить этот пример на 8443 порту достаточно загрузить этот файл:
-`(load "<путь_к_исходникам>/example/example.lisp")`
+```common-lisp
+(load "<путь_к_исходникам>/example/example.lisp")
+```
 
 Внимание!
 Хранилище пользователей TRIVIAL-STORAGE с паролями носит демонстрационный характер и не рекомендуется для использования.
@@ -42,7 +44,9 @@ USER-EXIST-P
 ------------
 * Можно установить своё сообщение для данных аутентификации:
 
-`(restas.auth.base:set-auth-message "Hi! Enter username and password")`
+```common-lisp
+(restas.auth.base:set-auth-message "Hi! Enter username and password")
+```
 
 * Можно при создании хранилища (любых наследников STORAGE) запретить хэширование паролей, 
 в этом случае аргумент :salt не нужен:
