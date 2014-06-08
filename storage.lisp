@@ -31,6 +31,7 @@
   ((pathname :initarg :pathname :accessor storage-pathname)))
 
 (defgeneric maybe-hashing-password (pass storage))
+;;;;;;;;
 (defgeneric store-user-pass (user pass storage))
 (defgeneric get-user-pass (user storage))
 (defgeneric get-users (storage))
