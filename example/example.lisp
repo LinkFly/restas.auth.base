@@ -1,5 +1,6 @@
 (defparameter *this-dir* (make-pathname :defaults *load-pathname* :name nil :type nil))
-(pushnew *this-dir* asdf:*central-registry*)
+(pushnew (make-pathname :defaults *this-dir* :directory (butlast (pathname-directory *this-dir*)))
+         asdf:*central-registry*)
 (ql:quickload :restas.auth.base)
 
 (restas:define-module :restas.login-example
