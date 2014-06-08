@@ -19,23 +19,14 @@
   (make-instance 'trivial-storage :pathname (merge-pathnames *this-dir* "users.trivial-storage")
                  :salt *hashing-salt*))
 
-(restas.auth.base:store-user-pass "user" 
-                             "pass"
-                             ;(restas.auth:prepare-password "pass" *hashing-salt*)
-                             (get-trivial-storage))
+(restas.auth.base:store-user-pass "user" "pass" (get-trivial-storage))
 
-(if (not (check-password "user"
-                         ;(restas.auth:prepare-password "pass" *hashing-salt*)
-                         "pass"
-                         (get-trivial-storage)))
-    (error "Example not working! Please send bug message"))
+(unless (check-password "user" "pass" (get-trivial-storage))
+  (error "Example not working! Please send bug message"))
 
-;(restas.auth:set-salt restas.auth.storage:*default-salt*)
-;(restas.auth:set-auth-message "Hi! Enter username and password")
-;(restas.auth:set-auth-message restas.auth::*default-auth-message*)
+(restas.auth.base:set-auth-message "Hi! Enter username and password")
 (restas.auth.base:set-storage (get-trivial-storage))
 ;(restas.auth::get-users (get-storage))
-
 
 (restas:start :restas.login-example :port 8443 ;;Listening 443 port denied (by default) on Windows7
        :decorators (list #'restas.auth.base:@http-auth-require)
