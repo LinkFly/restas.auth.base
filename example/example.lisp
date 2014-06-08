@@ -16,15 +16,17 @@
 (defparameter *hashing-salt* "<blabla>")
 
 (defun get-trivial-storage ()
-  (make-instance 'trivial-storage :pathname (merge-pathnames *this-dir* "users.trivial-storage")))
+  (make-instance 'trivial-storage :pathname (merge-pathnames *this-dir* "users.trivial-storage")
+                 :salt *hashing-salt*))
 
-(restas.auth:store-user-pass "user" 
-                             (restas.auth:prepare-password "pass" *hashing-salt*)
+(restas.auth.base:store-user-pass "user" 
+                             "pass"
+                             ;(restas.auth:prepare-password "pass" *hashing-salt*)
                              (get-trivial-storage))
 
 (if (not (check-password "user"
-                         (restas.auth:prepare-password "pass" 
-                                                       *hashing-salt*)
+                         ;(restas.auth:prepare-password "pass" *hashing-salt*)
+                         "pass"
                          (get-trivial-storage)))
     (error "Example not working! Please send bug message"))
 

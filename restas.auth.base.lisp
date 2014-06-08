@@ -45,7 +45,7 @@
          (let ((storage (get-storage)))
            (or (and (user-exist-p user storage)
                     (check-password user
-                                    (maybe-hashing-password password storage)
+                                    password
                                     storage))
                (require-authorization (get-auth-message)))))))
 
@@ -54,6 +54,7 @@
 
 (defun check-password (user pass storage)
   ;(setf user "LinkFly" storage #P"D:/linkfly-win-files/projects/restas-login/example/users.trivial-storage")
-  (string= (get-user-pass user storage) pass))
+  (string= (get-user-pass user storage)
+           (maybe-hashing-password pass storage)))
 
 

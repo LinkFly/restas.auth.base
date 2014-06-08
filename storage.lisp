@@ -27,7 +27,7 @@
   ((hashing-password :initform t :initarg :hashing-password :accessor storage-hashing-password)
    (salt :initform *default-salt* :initarg :salt :accessor storage-salt)))
 
-(defclass trivial-storage ()
+(defclass trivial-storage (storage)
   ((pathname :initarg :pathname :accessor storage-pathname)))
 
 (defgeneric maybe-hashing-password (pass storage))
