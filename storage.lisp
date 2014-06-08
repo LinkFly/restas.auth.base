@@ -7,7 +7,9 @@
   (:use :cl :hu.dwim.defclass-star :iterate)
   (:import-from :babel #:string-to-octets)
   (:import-from :ironclad #:digest-sequence)
-  (:export #:storage #:trivial-storage #:prepare-password #:store-user-pass #:get-user-pass #:*default-salt* #:get-users #:user-exist-p))
+  (:export
+   #:storage #:storage-hashing-password #:storage-salt #:trivial-storage #:prepare-password
+   #:maybe-hashing-password #:store-user-pass #:get-user-pass #:*default-salt* #:get-users #:user-exist-p))
 
 (in-package :restas.auth.storage)
 
@@ -21,11 +23,14 @@
 
 ;;;;;;;;; Generic API ;;;;;;;;;;
 ;; Abstract storage 
-(defclass storage () ())
+(defclass storage () 
+  ((hashing-password :initform t :initarg :hashing-password :accessor storage-hashing-password)
+   (salt :initform *default-salt* :initarg :salt :accessor storage-salt)))
 
 (defclass trivial-storage ()
   ((pathname :initarg :pathname :accessor storage-pathname)))
 
+(defgeneric maybe-hashing-password (pass storage))
 (defgeneric store-user-pass (user pass storage))
 (defgeneric get-user-pass (user storage))
 (defgeneric get-users (storage))
@@ -79,18 +84,25 @@
 (defun read-trivial-storage (file)
   (read-file file))
 
+;;; Shared implementation
+(defmethod maybe-hashing-password (pass (storage storage))
+  (if (not (storage-hashing-password storage))
+      pass
+    (prepare-password pass (storage-salt storage))))
+
 ;;; Trivial implementation 
 (defmethod store-user-pass (user pass (storage trivial-storage) &aux data pathname)
+  (setf pass (maybe-hashing-password pass storage))
   (setf pathname (storage-pathname storage))
   (setf data (if (probe-file pathname)
                  (read-trivial-storage pathname)
                (progn (init-trivial-storage pathname) nil)))
   (if (not data)
-                 (setf data `((,user ,pass)))
-               (let ((pair (assoc user data :test #'string=)))
-                 (if pair 
-                     (setf (second pair) pass)
-                   (push (list user pass) data))))
+      (setf data `((,user ,pass)))
+    (let ((pair (assoc user data :test #'string=)))
+      (if pair 
+          (setf (second pair) pass)
+        (push (list user pass) data))))
   (update-trivial-storage pathname data))
 
 (defmethod get-user-pass (user (storage trivial-storage))

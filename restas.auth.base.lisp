@@ -42,9 +42,12 @@
   (and (call-next-method)
        (multiple-value-bind (user password)
            (authorization)
-         (or (and (user-exist-p user (get-storage))
-                  (check-password user (prepare-password password (get-salt)) (get-storage)))
-             (require-authorization (get-auth-message))))))
+         (let ((storage (get-storage)))
+           (or (and (user-exist-p user storage)
+                    (check-password user
+                                    (maybe-hashing-password password storage)
+                                    storage))
+               (require-authorization (get-auth-message)))))))
 
 (defun @http-auth-require (route)
   (make-instance 'http-auth-route :target route))
