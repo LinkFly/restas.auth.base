@@ -11,7 +11,7 @@ RESTAS.AUTH.BASE - Базовая система аутентификации для систем на базе RESTAS/HUNC
 
 1) Создать своего наследника от класса STORAGE
 
-2) Определить методы для нового класса, для следующих обобщённых ф-ий
+2) Определить методы для нового класса, для следующих обобщённых ф-ий:
 STORE-USER-PASS
 GET-USER-PASS
 GET-USERS
@@ -24,15 +24,19 @@ USER-EXIST-P
 нужно указать ключевые аргументы: :pathname и :salt (любая строка, которая будет присоединяться к паролю, 
 для затруднения брутфорса):
 
-`(defun get-trivial-storage ()
+```common-lisp
+(defun get-trivial-storage ()
   (make-instance 'trivial-storage :pathname (merge-pathnames *this-dir* "users.trivial-storage")
                  :salt *hashing-salt*))
-(restas.auth.base:set-storage (get-trivial-storage))`
+(restas.auth.base:set-storage (get-trivial-storage))
+```
 
 * Для запуска веб-сервера с системой аутентификации необходимо передать декоратор #'restas.auth.base:@http-auth-require :
 
-`(restas:start :restas.login-example :port 8443
-	       :decorators (list #'restas.auth.base:@http-auth-require)`
+```common-lisp
+(restas:start :restas.login-example :port 8443
+              :decorators (list #'restas.auth.base:@http-auth-require))
+```
 
 Дополнения
 ------------
@@ -43,7 +47,7 @@ USER-EXIST-P
 * Можно при создании хранилища (любых наследников STORAGE) запретить хэширование паролей, 
 в этом случае аргумент :salt не нужен:
 
-`(make-instance 'trivial-storage :pathname (merge-pathnames *this-dir* "users.trivial-storage")
-                 :hashing-password nil)`
-
-
+```common-lisp
+(make-instance 'trivial-storage :pathname (merge-pathnames *this-dir* "users.trivial-storage")
+               :hashing-password nil)
+```
